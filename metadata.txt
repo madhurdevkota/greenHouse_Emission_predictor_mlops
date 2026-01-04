@@ -1,0 +1,13 @@
+column_name	description
+start_time	start time of the data collection
+end_time	end time of the data collection
+emissions_quantity	total CO2 emission
+emissions_factor	emission factor 
+capacity	capacity of the power industry
+capacity_factor	capacity factor
+activity	activity of the power industry
+modified_date	ignore
+source_type	source of emission
+state	us state of the power industry located
+area	state area
+pop2020	population of the  state for the year 2020
