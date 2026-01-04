@@ -1,9 +1,0 @@
-## to activate venv
-
-## got to the dir:
-E:\Learning_course\MLOps\coursera_packt\greenHouse_Emission_predictor
-
-## activate the env
-source .venv/Scripts/activate 
-## if it is powershell i.e. PS, then use below to activate 
-.\.venv\Scripts\Activate.ps1

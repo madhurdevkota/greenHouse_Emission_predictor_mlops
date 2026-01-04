@@ -11,6 +11,9 @@ venv/
 ## ignore del directories
 del
 
+## ignore user directories
+/for_user/
+
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
