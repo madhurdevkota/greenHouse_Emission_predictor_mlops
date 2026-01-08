@@ -1,0 +1,51 @@
+# ---------------------------------------------
+# DATA PROCESSING & ANALYSIS
+# ---------------------------------------------
+pandas
+numpy
+
+# ---------------------------------------------
+# MACHINE LEARNING
+# ---------------------------------------------
+scikit-learn
+xgboost
+missingno
+
+# ---------------------------------------------
+# VISUALIZATION
+# ---------------------------------------------
+matplotlib
+seaborn
+
+# ---------------------------------------------
+# GEO
+# ---------------------------------------------
+geopandas
+shapely
+reverse_geocoder
+
+# ---------------------------------------------
+# EXPERIMENT TRACKING & MODEL MANAGEMENT
+# ---------------------------------------------
+mlflow         # End-to-end ML lifecycle tracking, including experiment tracking, model packaging, and deployment
+
+# ---------------------------------------------
+# TESTING
+# ---------------------------------------------
+pytest         # Python testing framework - for writing unit tests for ML pipelines, data validation, etc.
+
+# ---------------------------------------------
+# API DEVELOPMENT (FOR MODEL SERVING)
+# ---------------------------------------------
+fastapi      # Lightweight, high-performance web framework for serving ML models via REST APIs
+uvicorn     # ASGI server for running FastAPI apps — lightweight and fast
+
+# ---------------------------------------------
+#  MISC
+# ---------------------------------------------
+pyyaml
+joblib
+setuptools
+ipykernel
+
+

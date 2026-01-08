@@ -23,12 +23,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger('data-processor')
 
-global PROJECT_ROOT, DATA_DIRPATH, GEO_DATA_DIRPATH
-
-
-
-
-
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 DATA_DIRPATH = PROJECT_ROOT / 'data' / 'raw'
