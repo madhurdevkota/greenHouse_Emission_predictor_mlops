@@ -31,7 +31,7 @@ class Emission_Prediction_Request( pydantic.BaseModel ):
      source_type: SourceType
      state: USState
      area: float = pydantic.Field( ..., ge= 0, description= 'Area of the State - must be non negative numerical value' )
-     pop: int = pydantic.Field( ..., ge= 0, description= 'Population of the State - must be non negative integer value' )
+     pop2020: int = pydantic.Field( ..., ge= 0, description= 'Population of the State - must be non negative integer value' )
 
 
 class Emission_Prediction_Response( pydantic.BaseModel ):

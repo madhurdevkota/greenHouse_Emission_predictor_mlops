@@ -6,6 +6,10 @@ import sklearn as skl
 from copy import deepcopy
 import joblib
 
+# import create_features
+# import features.create_features
+import features._create_features
+
 
 ## set up logging
 logging.basicConfig(
@@ -13,49 +17,6 @@ logging.basicConfig(
     format= '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger( 'feature-engineering' )
-
-
-
-def create_features( df ):
-    """Create new features from existing data."""
-    logger.info( "Creating new features" )
-
-    df_copy = deepcopy( df )
-
-    feature_df = (  deepcopy( df_copy )
-        # 1) transforms + ratios 
-        .assign(
-            log1p_activity=         lambda df:  np.log1p(  df['activity']  ),
-            log1p_capacity=         lambda df:  np.log1p(  df['capacity']  ),
-            log1p_pop2020=          lambda df:  np.log1p(  df['pop2020']  ),
-            log1p_area=             lambda df:  np.log1p(  df['area']  ),
-            log1Pop_density=      	lambda df:  np.log1p(  df['pop2020'] / df['area'].replace(  0, np.nan  )  ),
-            activity_per_capita=    lambda df:  df['activity'] / df['pop2020'].replace(  0, np.nan  ),
-            activity_per_area=      lambda df:  df['activity'] / df['area'].replace(  0, np.nan  ),
-            capacity_per_capita=    lambda df:  df['capacity'] / df['pop2020'].replace(  0, np.nan  ),
-            capacity_density=       lambda df:  df['capacity'] / df['area'].replace(  0, np.nan  ),
-
-        # 2) power-system structure features 
-            potential_output=               lambda df:  df['capacity'] * df['capacity_factor'],
-            utilization_ratio=              lambda df:  df['activity'] / (  (df['capacity'] * df['capacity_factor']).replace(  0, np.nan  )  ),
-            activity_capacityFactor=        lambda df:  df['activity'] * df['capacity_factor'],
-            activity_per_capacity=          lambda df:  df['activity'] / df['capacity'].replace(  0, np.nan  ),
-            activity_capacity=              lambda df:  df['activity'] * df['log1p_capacity'],
-            capacity_factor_capacity=       lambda df: df['capacity_factor'] * df['log1p_capacity'],
-        ## 3. interaction features
-            state =  lambda df: df['state'].str.replace( ' ', '' ),
-            source_type =  lambda df: df['source_type'].str.replace( '_', '' ),
-            inter =  lambda df: df.apply( lambda _df: f"{_df['state']}_{_df['source_type']}", axis= 'columns'   ) ,
-        
-        )
-        # ## One-hot encoding for state & interaction-field
-        # .pipe( api.utils.OHE_func, categorical_col= ['state', 'inter']  )
-        .drop( columns= ['emissions_factor'], error= 'ignore' ) ## as using this field would leakage the data
-    )
-
-    logger.info( "Created 1.transforms + ratios  2.power-system structure  3. Interaction features. Next One Hot Encoding" )
-
-    return feature_df
 
 
 def create_preprocessor():
@@ -86,11 +47,13 @@ def main( input_file, output_file, preprocessor_file ):
     df = pd.read_csv( input_file )
 
     # Create features
-    df_featured = create_features( df )
+    # df_featured = create_feature( df )
+    # df_featured = create_features.main( df )
+    # df_featured = features.create_features.main( df )
+    df_featured = features._create_features.main( df )
+    
     logger.info( f'Created featured dataset with shape: {df_featured.shape}' )
 
-    # Create and fit the preprocessor
-    preprocessor = create_preprocessor()
 
     xx = df_featured.drop( columns= ['emissions_quantity'] , errors= 'ignore' )  # Features only
     yy = df_featured['emissions_quantity']  # Target variable
@@ -106,10 +69,12 @@ def main( input_file, output_file, preprocessor_file ):
         'activity_capacity', 'capacity_factor_capacity',
     ]
 
+    
     xx_remainingFeatures_df = xx.filter( REMAINING_Features_ls )
 
 
-
+    # Create the preprocessor
+    preprocessor = create_preprocessor()
     ## Fit and transform (OHE) the data
     x_transformed = preprocessor.fit_transform( xx )
     ## If result is sparse, make dense
