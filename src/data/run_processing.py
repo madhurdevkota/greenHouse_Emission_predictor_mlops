@@ -13,7 +13,9 @@ import shapely as shpy
 
 ## import local lib
 
-import api.utils
+# import api.utils
+
+import utils_dir.util1
 
 
 # Set up logging
@@ -34,7 +36,6 @@ shpfile_path = GEO_DATA_DIRPATH / 'cb_2016_us_state_5m.shp'
 pop_filepath = GEO_DATA_DIRPATH / 'us_pop_by_state.csv'
 
 OUTPUT_FILEPATH = PROJECT_ROOT  / 'data' / 'processed' / 'processed_data.csv'
-
 
 
 
@@ -193,7 +194,7 @@ def process_data( _power_df: pd.DataFrame, _usa_gdf: gpd.GeoDataFrame, _uspop_df
         'pop2020': 'float'
     }
 
-    powerCo2_df = api.utils.enforce_dtypes( powerCo2_df, DTYPE_MAP )
+    powerCo2_df = utils_dir.util1.enforce_dtypes( powerCo2_df, DTYPE_MAP )
 
     print('\nApplied dtypes:')
     print( powerCo2_df[ [c for c in DTYPE_MAP.keys() if c in powerCo2_df.columns] ].dtypes )
@@ -217,7 +218,7 @@ def process_data( _power_df: pd.DataFrame, _usa_gdf: gpd.GeoDataFrame, _uspop_df
     col2Impute = miss_col_less_threshold['colnm'].to_list()
     ## get key value pairs of DTYPE_MAP for elements in  col2Impute
     impute_dtype_map = {  k: v for k, v in DTYPE_MAP.items() if k in col2Impute  }
-    powerCo2_df = api.utils.impute_by_dtype(powerCo2_df, impute_dtype_map)
+    powerCo2_df = utils_dir.util1.impute_by_dtype(powerCo2_df, impute_dtype_map)
     # show top rows and missing counts after imputation
     print('\nMissing counts after imputation:')
     print(  powerCo2_df.isna().sum().loc[ impute_dtype_map.keys() ]  )

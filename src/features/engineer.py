@@ -60,7 +60,7 @@ def create_features( df ):
 
 def create_preprocessor():
     """Create a preprocessing pipeline."""
-    logger.info( 'Creating preprocessor pipeline') 
+    logger.info( 'Creating preprocessor pipeline')
     # Define feature groups
     cat_col_ls = ['state', 'source_type', 'inter']
     # Preprocessing for categorical features
@@ -82,12 +82,12 @@ def create_preprocessor():
 def main( input_file, output_file, preprocessor_file ):
     """Full feature engineering pipeline."""
     # Load cleaned data
-    logger.info( f"Loading data from {input_file}" )
+    logger.info( f'Loading data from {input_file}' )
     df = pd.read_csv( input_file )
 
     # Create features
     df_featured = create_features( df )
-    logger.info( f"Created featured dataset with shape: {df_featured.shape}" )
+    logger.info( f'Created featured dataset with shape: {df_featured.shape}' )
 
     # Create and fit the preprocessor
     preprocessor = create_preprocessor()
@@ -140,8 +140,8 @@ def main( input_file, output_file, preprocessor_file ):
 
     # Save the preprocessor
     joblib.dump(preprocessor, preprocessor_file)
-    logger.info(f"Saved preprocessor to {preprocessor_file}")
-    
+    logger.info(f'Saved preprocessor to {preprocessor_file}')
+
     
 
     return engineered_df  ## in actual pipeline, returning should be None, oonly saving the output files (to cloud)
