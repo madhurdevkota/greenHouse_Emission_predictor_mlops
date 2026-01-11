@@ -1,1 +1,1 @@
-Tranied Models are added here
+Trained Models are added here
