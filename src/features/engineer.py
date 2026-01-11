@@ -50,7 +50,7 @@ def create_features( df ):
         )
         # ## One-hot encoding for state & interaction-field
         # .pipe( api.utils.OHE_func, categorical_col= ['state', 'inter']  )
-        .drop( columns= ['emissions_factor'] ) ## as using this field would leakage the data
+        .drop( columns= ['emissions_factor'], error= 'ignore' ) ## as using this field would leakage the data
     )
 
     logger.info( "Created 1.transforms + ratios  2.power-system structure  3. Interaction features. Next One Hot Encoding" )

@@ -24,7 +24,7 @@ class SourceType( str, enum.Enum ):
     waste = 'waste'
 
 
-class Emission_Prediction_request( pydantic.BaseModel ):
+class Emission_Prediction_Request( pydantic.BaseModel ):
      capacity: float = pydantic.Field( ..., ge= 0, description= 'Capacity of the Industry - must be non negative numerical value' )
      capacity_factor: float = pydantic.Field( ..., ge= 0, description= 'Capacity factor of the Industry - must be non negative numerical value' )
      activity: float = pydantic.Field( ..., ge= 0, description= 'Activity of the Industry - must be non negative numerical value' )
@@ -34,7 +34,7 @@ class Emission_Prediction_request( pydantic.BaseModel ):
      pop: int = pydantic.Field( ..., ge= 0, description= 'Population of the State - must be non negative integer value' )
 
 
-class Emission_Prediction_response( pydantic.BaseModel ):
+class Emission_Prediction_Response( pydantic.BaseModel ):
      predicted_emission: float 
      confidence_interval: List[ float ]
      feature_importance: dict
