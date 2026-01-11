@@ -138,6 +138,12 @@ def main( input_file, output_file, preprocessor_file ):
     engineered_df.to_csv( output_file, index= False )
     logger.info( f'Saved fully preprocessed data to {output_file}' )
 
+    # Save the preprocessor
+    joblib.dump(preprocessor, preprocessor_file)
+    logger.info(f"Saved preprocessor to {preprocessor_file}")
+    
+    
+
     return engineered_df  ## in actual pipeline, returning should be None, oonly saving the output files (to cloud)
 
 
