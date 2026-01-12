@@ -8,7 +8,7 @@ import joblib
 
 # import create_features
 # import features.create_features
-import features._create_features
+import features.create_features
 
 
 ## set up logging
@@ -50,7 +50,7 @@ def main( input_file, output_file, preprocessor_file ):
     # df_featured = create_feature( df )
     # df_featured = create_features.main( df )
     # df_featured = features.create_features.main( df )
-    df_featured = features._create_features.main( df )
+    df_featured = features.create_features.main( df )
     
     logger.info( f'Created featured dataset with shape: {df_featured.shape}' )
 

@@ -22,52 +22,34 @@ logger = logging.getLogger( 'create features' )
 source_dir = pathlib.Path( 'src' )
 _DOMAIN_DIR = source_dir / 'domain'
 
-_SOURCE_TYPES_JSON = _DOMAIN_DIR / 'source_types.json'
-_USSTATES_JSON = _DOMAIN_DIR / 'usstates.json'
+_SOURCE_TYPE_JSON_path = _DOMAIN_DIR / 'source_types.json'
+_USSTATES_JSON_path = _DOMAIN_DIR / 'usstates.json'
 
 
-def _read_json_list( path: Path, key_hint: str ) -> list[str]:
+def _read_json_list(path: Path, key: str) -> list[str]:
     """
     Read a JSON file that contains a list of strings.
-    Supported shapes:
-      - {"<key>": [ ... ]}
-      - [ ... ]
+
+    Expected structure:
+      { "<key>": [ ... ] }
+
     """
-    if not path.exists():
-        # Keep feature creation usable even if domain files aren't present in some contexts (tests, notebooks)
-        logger.warning( f'Domain file not found: {path}. Skipping domain validation.' )
-        return []
-
-    obj = json.loads( path.read_text( encoding= 'utf-8' ) )
-
-    if isinstance( obj, list ):
-        return [ str(x) for x in obj ]
-
-    if isinstance( obj, dict ):
-        # Prefer obvious keys; else pick the first list value.
-        for k in ( key_hint, 'values', 'items', 'data' ):
-            if k in obj and isinstance( obj[k], list ):
-                return [ str(x) for x in obj[k] ]
-
-        for v in obj.values():
-            if isinstance( v, list ):
-                return [ str(x) for x in v ]
-
-    raise ValueError( f"Unsupported JSON structure in {path}. Expected a list or dict-of-list." )
+    obj = json.loads(path.read_text(encoding='utf-8'))
+    return [str(x) for x in obj[key]]
 
 
-def _load_domain_values():
+def _load_domain_values( pathlib_path, key: str) -> set[str]:
     """
-    Loads domain values from:
-      - src/domain/source_types.json
-      - src/domain/usstates.json
+    Load a set of string values from a JSON file.
 
-    Returns:
-      (states_raw_set, source_types_raw_set)
+    Expected JSON structure:
+      { "<key>": [ ... ] }
+
+    Notes:
+    - `path_str` must be a (Pathlib) path to a JSON file
     """
-    states = _read_json_list( _USSTATES_JSON, key_hint= 'states' )
-    source_types = _read_json_list( _SOURCE_TYPES_JSON, key_hint= 'source_types' )
-    return set(states), set(source_types)
+    obj = json.loads( pathlib_path.read_text(encoding='utf-8') )
+    return { str(x) for x in obj[key] }
 
 
 def _canon_state( s: pd.Series ) -> pd.Series:
@@ -110,8 +92,11 @@ def main( df: pd.DataFrame ) -> pd.DataFrame:
     if missing:
         raise ValueError( f"Missing required columns for feature engineering: {missing}" )
 
-    # Optional domain validation (strictness kept low: warn, don't break training runs)
-    states_raw_set, source_types_raw_set = _load_domain_values()
+    # states_raw_set, source_types_raw_set = _load_domain_values()
+
+    states_raw_set = _load_domain_values( _USSTATES_JSON_path, key= 'states' )
+    source_types_raw_set = _load_domain_values( _SOURCE_TYPE_JSON_path, key= 'source_types' )
+
 
     # Copy once (deep) to avoid side effects
     df_copy = deepcopy( df )

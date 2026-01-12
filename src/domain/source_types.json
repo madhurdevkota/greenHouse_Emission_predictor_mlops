@@ -1,10 +1,10 @@
 {
-  'source_types': [
-	'biomass',
-	'coal',
-	'gas',
-	'oil',
-	'other_fossil',
-	'waste'
+  "source_types": [
+	"biomass",
+	"coal",
+	"gas",
+	"oil",
+	"other_fossil",
+	"waste"
   ]
 }
