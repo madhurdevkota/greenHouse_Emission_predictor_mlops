@@ -47,12 +47,19 @@ def _load_domain_values( pathlib_path, key: str) -> set[str]:
 
 def _canon_state( s: pd.Series ) -> pd.Series:
     # Canonical state used for downstream categorical encoding:
-    return s.strip().replace( ' ', '', regex= False )
+    if isinstance( s, pd.Series ):
+        return s.str.strip().str.replace( ' ', '', regex= False )
+    if isinstance( s, str ):
+        return s.strip().replace( ' ', '' )
 
 
 def _canon_source_type( s: pd.Series ) -> pd.Series:
     # Canonical source_type used for downstream categorical encoding:
-    return s.strip()
+    if isinstance( s, pd.Series ):
+        return s.str.strip()
+    if isinstance( s, str ):
+        return s.strip()
+
 
 
 def _safe_div( num: pd.Series, den: pd.Series ) -> pd.Series:
