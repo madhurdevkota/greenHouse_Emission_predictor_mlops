@@ -4,6 +4,8 @@ from copy import deepcopy
 from pathlib import Path
 import pathlib
 
+import sklearn as skl
+
 import numpy as np
 import pandas as pd
 
@@ -26,17 +28,7 @@ _SOURCE_TYPE_JSON_path = _DOMAIN_DIR / 'source_types.json'
 _USSTATES_JSON_path = _DOMAIN_DIR / 'usstates.json'
 
 
-def _read_json_list(path: Path, key: str) -> list[str]:
-    """
-    Read a JSON file that contains a list of strings.
-
-    Expected structure:
-      { "<key>": [ ... ] }
-
-    """
-    obj = json.loads(path.read_text(encoding='utf-8'))
-    return [str(x) for x in obj[key]]
-
+## --------------- Start:  helper functions  ---------------
 
 def _load_domain_values( pathlib_path, key: str) -> set[str]:
     """
@@ -46,23 +38,21 @@ def _load_domain_values( pathlib_path, key: str) -> set[str]:
       { "<key>": [ ... ] }
 
     Notes:
-    - `path_str` must be a (Pathlib) path to a JSON file
+    - `pathlib_path` must be a (Pathlib) path to a JSON file
     """
+    if isinstance( pathlib_path, str ):  pathlib_path = pathlib.Path( pathlib_path )
     obj = json.loads( pathlib_path.read_text(encoding='utf-8') )
     return { str(x) for x in obj[key] }
 
 
 def _canon_state( s: pd.Series ) -> pd.Series:
     # Canonical state used for downstream categorical encoding:
-    # Remove spaces to match your existing behavior.
-    return s.astype( 'string' ).str.strip().str.replace( ' ', '', regex= False )
+    return s.strip().replace( ' ', '', regex= False )
 
 
 def _canon_source_type( s: pd.Series ) -> pd.Series:
     # Canonical source_type used for downstream categorical encoding:
-    # Remove underscores to match  existing behavior (e.g., other_fossil -> otherfossil).
-    # return s.astype( 'string' ).str.strip().str.replace( '_', '', regex= False )
-    return s.astype( 'string' ).str.strip()
+    return s.strip()
 
 
 def _safe_div( num: pd.Series, den: pd.Series ) -> pd.Series:
@@ -70,7 +60,100 @@ def _safe_div( num: pd.Series, den: pd.Series ) -> pd.Series:
     return num / den
 
 
-def main( df: pd.DataFrame ) -> pd.DataFrame:
+def build_universal_categories( usstates_json: str, source_types_json: str ) -> tuple[list[str], list[str], list[str]]:
+    """
+    Build deterministic, universal category lists for:
+      - state
+      - source_type
+      - inter = state_source_type  (cartesian product)
+
+    Output lists are sorted and therefore stable.
+    """
+    states_raw = _load_domain_values( usstates_json, key= 'states' )
+    sources_raw = _load_domain_values( source_types_json, key= 'source_types' )
+
+    states = sorted( { _canon_state(s) for s in states_raw } )
+    sources = sorted( { _canon_source_type(t) for t in sources_raw } )
+
+    # Deterministic cartesian product: state-major then source-major
+    inter = [ f'{st}_{so}' for st in states for so in sources ]
+
+    return states, sources, inter
+
+
+
+
+## --------------- End:  helper functions  ---------------
+
+
+def create_preprocessor_fixed( usstates_json: str, source_types_json: str ):
+    """
+    Create a preprocessing pipeline with a FIXED OHE feature space.
+    This ensures that even if the training dataset is a subset of the universal categories,
+    the resulting transformed matrix has the same columns in the same order.
+    """
+    logger.info( 'Creating preprocessor pipeline (fixed category space)' )
+
+    cat_col_ls = [ 'state', 'source_type', 'inter' ]
+    states_cat, sources_cat, inter_cat = build_universal_categories( usstates_json, source_types_json )
+
+    categorical_transformer = skl.pipeline.Pipeline(
+        steps= [
+            (
+                'onehot',
+                skl.preprocessing.OneHotEncoder(
+                    categories= [ states_cat, sources_cat, inter_cat ],
+                    handle_unknown= 'ignore',
+                    sparse_output= True
+                )
+            ),
+        ]
+    )
+
+    preprocessor = skl.compose.ColumnTransformer(
+        transformers= [
+            ( 'cat', categorical_transformer, cat_col_ls ),
+        ],
+        remainder= 'drop'
+    )
+
+    logger.info( 'Preprocessor pipeline created' )
+    return preprocessor
+
+
+def transform_to_engineered_df( preprocessor, xx: pd.DataFrame,
+                                remaining_features_ls: list[str] ) -> tuple[pd.DataFrame, list[str]]:
+    """
+    Transform xx into a single engineered feature DataFrame with stable ordering:
+      [OHE columns (named)] + [remaining numeric features (named)]
+
+    Returns:
+      engineered_x_df, engineered_cols
+    """
+    # transform categoricals (preprocessor must already be fitted)
+    x_cat = preprocessor.transform( xx )
+    x_cat_arr = x_cat.toarray() if hasattr( x_cat, 'toarray' ) else x_cat
+
+    # get one-hot encoded feature names
+    ohe = preprocessor.named_transformers_['cat'].named_steps['onehot']
+    ohe_names = ohe.get_feature_names_out( preprocessor.transformers_[0][2] ).tolist()
+
+    x_cat_df = pd.DataFrame( x_cat_arr, columns= ohe_names, index= xx.index )
+
+    # remaining numeric features in fixed order
+    x_rem_df = xx.filter( remaining_features_ls ).copy()
+
+    engineered_x_df = pd.concat( [ x_cat_df, x_rem_df ], axis= 1 )
+    engineered_cols = ohe_names + remaining_features_ls
+
+    return engineered_x_df, engineered_cols
+
+
+
+## --------------- Start:  Main utility functions  ---------------
+
+
+def create_features( df: pd.DataFrame ) -> pd.DataFrame:
     """
     Create new features from existing data.
 
@@ -88,9 +171,8 @@ def main( df: pd.DataFrame ) -> pd.DataFrame:
         'area', 'pop2020',
         'state', 'source_type'  ]
     )
-    missing = sorted( required_cols - set(df.columns) )
-    if missing:
-        raise ValueError( f"Missing required columns for feature engineering: {missing}" )
+    if missing := sorted( required_cols - set(df.columns) ):
+        raise ValueError( f'Missing required columns for feature engineering: {missing}' )
 
     # states_raw_set, source_types_raw_set = _load_domain_values()
 
@@ -166,18 +248,4 @@ def main( df: pd.DataFrame ) -> pd.DataFrame:
 
 
 if __name__ == '__main__':
-    ## Example usage
-    data = {
-        'capacity': [100, 200],
-        'capacity_factor': [0.3, 0.5],
-        'activity': [2500, 6000],
-        'pop2020': [10000, 20000],
-        'area': [50, 80],
-        'state': ['California', 'New York'],
-        'source_type': ['gas', 'other_fossil'],
-        'emissions_factor': [0.1, 0.2]  ## This column will be dropped
-    }
-    df = pd.DataFrame( data )
-
-    featured_df = main( df )
-    print( featured_df.head() )
+    pass
