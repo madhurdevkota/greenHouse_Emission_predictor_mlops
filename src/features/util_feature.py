@@ -30,7 +30,7 @@ _USSTATES_JSON_path = _DOMAIN_DIR / 'usstates.json'
 
 ## --------------- Start:  helper functions  ---------------
 
-def _load_domain_values( pathlib_path, key: str) -> set[str]:
+def _load_domain_values( pathlib_path:pathlib.Path, key: str) -> set[str]:
     """
     Load a set of string values from a JSON file.
 

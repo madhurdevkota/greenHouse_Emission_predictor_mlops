@@ -47,5 +47,6 @@ pyyaml
 joblib
 setuptools
 ipykernel
+pydantic
 
 
