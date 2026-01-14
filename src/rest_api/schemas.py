@@ -13,24 +13,22 @@ import features.util_feature
 # -----------------------------
 # Domain JSON paths
 # -----------------------------
-_USSTATES_JSON = pathlib.Path(r'src/domain/usstates.json')
-_SOURCE_TYPES_JSON = pathlib.Path(r'src/domain/source_types.json')
+
+# source_dir = pathlib.Path( 'src' )
+# _DOMAIN_DIR = source_dir / 'domain'
+
+# _USSTATES_JSON_path = _DOMAIN_DIR / 'usstates.json'
+# _SOURCE_TYPE_JSON_path = _DOMAIN_DIR / 'source_types.json'
 
 
-def load_domain_values(path: pathlib.Path, key: str) -> list[str]:
-    """
-    Load a list of string values from a JSON file.
+# Path to THIS file → src/rest_api/schemas.py
+_THIS_DIR = pathlib.Path(__file__).resolve().parent
+# Go up to src/, then into domain/
+_DOMAIN_DIR = _THIS_DIR.parent / 'domain'
+_USSTATES_JSON_path = _DOMAIN_DIR / 'usstates.json'
+_SOURCE_TYPE_JSON_path = _DOMAIN_DIR / 'source_types.json'
 
-    Expected JSON structure:
-      { "<key>": [ ... ] }
-
-    Assumption:
-      - JSON is clean and valid
-      - values are valid enum strings
-    """
-    obj = json.loads(path.read_text(encoding='utf-8'))
-    return obj[key]
-
+print( f'\n{_SOURCE_TYPE_JSON_path}\n' )
 
 def build_str_enum(enum_name: str, values: list[str]) -> enum.EnumMeta:
     """
@@ -48,12 +46,12 @@ def build_str_enum(enum_name: str, values: list[str]) -> enum.EnumMeta:
 # -----------------------------
 USState = build_str_enum(
     enum_name= 'USState',
-    values= features.util_feature._load_domain_values(_USSTATES_JSON, key='states')
+    values= features.util_feature._load_domain_values(_USSTATES_JSON_path, key='states')
 )
 
 SourceType = build_str_enum(
     enum_name= 'SourceType',
-    values= features.util_feature._load_domain_values(_SOURCE_TYPES_JSON, key='source_types')
+    values= features.util_feature._load_domain_values(_SOURCE_TYPE_JSON_path, key='source_types')
 )
 
 

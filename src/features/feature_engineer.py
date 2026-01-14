@@ -17,7 +17,16 @@ logging.basicConfig(
 )
 logger = logging.getLogger( 'feature-engineering' )
 
-
+## features remaining after one-hot encoding categorical variables
+REMAINING_Features_ls = [
+    'capacity', 'capacity_factor', 'activity',
+    'area', 'pop2020',
+    'log1p_activity', 'log1p_capacity', 'log1p_pop2020', 'log1p_area',
+    'log1Pop_density', 'activity_per_capita', 'activity_per_area',
+    'capacity_per_capita', 'capacity_density', 'potential_output',
+    'utilization_ratio', 'activity_capacityFactor', 'activity_per_capacity',
+    'activity_capacity', 'capacity_factor_capacity',
+]
 
 
 def main( input_file: str, output_file: str, output_Preprocessor: str, usstates_json: str, source_types_json: str ):
@@ -31,16 +40,7 @@ def main( input_file: str, output_file: str, output_Preprocessor: str, usstates_
 
     xx = df_featured.drop( columns= [ 'emissions_quantity' ], errors= 'ignore' )  # Features only
 
-    ## features remaining after one-hot encoding categorical variables
-    REMAINING_Features_ls = [
-        'capacity', 'capacity_factor', 'activity',
-        'area', 'pop2020',
-        'log1p_activity', 'log1p_capacity', 'log1p_pop2020', 'log1p_area',
-        'log1Pop_density', 'activity_per_capita', 'activity_per_area',
-        'capacity_per_capita', 'capacity_density', 'potential_output',
-        'utilization_ratio', 'activity_capacityFactor', 'activity_per_capacity',
-        'activity_capacity', 'capacity_factor_capacity',
-    ]
+
 
     # Create the FIXED preprocessor
     preprocessor = util_feature.create_preprocessor_fixed( usstates_json= usstates_json, source_types_json= source_types_json )

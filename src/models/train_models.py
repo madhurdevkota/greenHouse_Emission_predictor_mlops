@@ -59,9 +59,8 @@ def main( args ):
 
     model_cfg = config['model']
 
-    if args.mlflow_tracking_uri:
-        mlflow.set_tracking_uri( args.mlflow_tracking_uri )
-        mlflow.set_experiment( config['model']['name'] )
+    mlflow.set_tracking_uri( args.mlflow_tracking_uri )
+    mlflow.set_experiment( config['model']['name'] )
 
     ## load dataset
     data_df = pd.read_csv( args.data )
@@ -119,15 +118,15 @@ def main( args ):
 
     ## add human-readable description
     description = f"""Model for predicting emissions.
-    Algorithm: {model_name}
-    Hyperparameters: {model_cfg.get('parameters')}
-    Features used: All features in the dataset except the target variable
-    Target variable: {target}
-    Trained on dataset: {args.data}
-    Model saved at: {args.models_dir}/trained/{model_name}.pkl
-    Performance metrics:
-    - MAE: {mae:.2f}
-    - R²: {r2:.4f}
+        Algorithm: {model_name}
+        Hyperparameters: {model_cfg.get('parameters')}
+        Features used: All features in the dataset except the target variable
+        Target variable: {target}
+        Trained on dataset: {args.data}
+        Model saved at: {args.models_dir}/trained/{model_name}.pkl
+        Performance metrics:
+        - MAE: {mae:.2f}
+        - R²: {r2:.4f}
     """
 
 
@@ -179,4 +178,4 @@ if __name__ == '__main__':
 
 
 ## to run
-## python .\src\models\train_models.py --config .\configs\model_config.yaml --data .\data\processed\feature_engineered.csv --models-dir models --mlflow-tracking-uri http://localhost:5555
+## python .\src\models\train_models.py --config .\configs\model_config.yaml --data .\data\processed\feature_engineered.csv --models-dir models --mlflow-tracking-uri http://localhost:5555  

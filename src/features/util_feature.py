@@ -20,12 +20,14 @@ logger = logging.getLogger( 'create features' )
 # -----------------------------
 # Domain lists
 # -----------------------------
-# _THIS_DIR = Path( __file__ ).resolve().parent
-source_dir = pathlib.Path( 'src' )
-_DOMAIN_DIR = source_dir / 'domain'
+_THIS_DIR = pathlib.Path(__file__).resolve().parent
+_DOMAIN_DIR = _THIS_DIR.parent / 'domain'
 
-_SOURCE_TYPE_JSON_path = _DOMAIN_DIR / 'source_types.json'
 _USSTATES_JSON_path = _DOMAIN_DIR / 'usstates.json'
+_SOURCE_TYPE_JSON_path = _DOMAIN_DIR / 'source_types.json'
+
+print(_USSTATES_JSON_path)
+print(_USSTATES_JSON_path.exists())
 
 
 ## --------------- Start:  helper functions  ---------------
