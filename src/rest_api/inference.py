@@ -24,13 +24,13 @@ MODEL_CONFIG_PATH = BASE_DIR / 'configs' / 'model_config.yaml'
 model_pkl = joblib.load(MODEL_PATH)
 preprocessor_pkl = joblib.load(PREPROCESSOR_PATH)
 
-def predict_emission( request: rest_api.schemas.Emission_Prediction_Request ) -> rest_api.schemas.Emission_Prediction_Response :
+def predict( request: rest_api.schemas.Emission_Prediction_Request ) -> rest_api.schemas.Emission_Prediction_Response :
     """
-    Docstring for predict_emission
     
-    :param request: Description
+    
+    :param request: 
     :type request: rest_api.schemas.Emission_Prediction_Request
-    :return: Description
+    :return: 
     :rtype: Emission_Prediction_Response
     """
     ## Prepare input data
@@ -57,11 +57,11 @@ def predict_emission( request: rest_api.schemas.Emission_Prediction_Request ) ->
 
 def batch_predict( request_ls: list[ rest_api.schemas.Emission_Prediction_Request ] ) -> list[ int ]:
     """
-    Docstring for batch_predict
     
-    :param request_ls: Description
+    
+    :param request_ls: 
     :type request_ls: list[ rest_api.schemas.Emission_Prediction_Request ]
-    :return: Description
+    :return: 
     :rtype: list[ int ]
     """
     input_data = pd.DataFrame( [ e_req.model_dump() for e_req in request_ls ] )
