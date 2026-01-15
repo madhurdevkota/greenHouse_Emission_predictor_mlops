@@ -12,13 +12,14 @@ import features.feature_engineer
 
 import rest_api.schemas
 
-## paths
-BASE_DIR = pathlib.Path(__file__).resolve().parents[2]
-MODEL_DIR = BASE_DIR / 'models' / 'trained'
+# import schemas
 
-MODEL_PATH = MODEL_DIR / 'greenhouse_emission_predict_model.pkl'
-PREPROCESSOR_PATH = MODEL_DIR / 'preprocessor.pkl'
-MODEL_CONFIG_PATH = BASE_DIR / 'configs' / 'model_config.yaml'
+## paths
+# BASE_DIR = pathlib.Path(__file__).resolve().parents[2]
+BASE_DIR = pathlib.Path( 'models/trained' ) ## ! if this path does work in deployment, change it according to 
+## Writign Dockerfile to Pck model with FASTAPI Wrapper 2 mins
+MODEL_PATH = BASE_DIR / 'greenhouse_emission_predict_model.pkl'
+PREPROCESSOR_PATH = BASE_DIR / 'preprocessor.pkl'
 
 
 model_pkl = joblib.load(MODEL_PATH)
