@@ -29,9 +29,9 @@ def build_str_enum(enum_name: str, values: list[str]) -> enum.EnumMeta:
       - enum member name == enum value
       - enum value is what FastAPI exposes in dropdowns
     """
-    return enum.Enum(
-        enum_name, { v: v for v in values },  type= str
-    )
+    return enum.Enum(  enum_name,
+                       { v: v for v in values },  type= str
+                    )
 
 
 # -----------------------------
