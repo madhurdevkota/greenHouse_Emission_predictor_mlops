@@ -2,6 +2,8 @@
 #    uv pip compile requirements.in -o requirements.txt
 alembic==1.17.2
     # via mlflow
+altair==6.0.0
+    # via streamlit
 annotated-doc==0.0.4
     # via fastapi
 annotated-types==0.7.0
@@ -10,12 +12,19 @@ anyio==4.12.1
     # via starlette
 asttokens==3.0.1
     # via stack-data
+attrs==25.4.0
+    # via
+    #   jsonschema
+    #   referencing
 blinker==1.9.0
-    # via flask
+    # via
+    #   flask
+    #   streamlit
 cachetools==6.2.4
     # via
     #   mlflow-skinny
     #   mlflow-tracing
+    #   streamlit
 certifi==2026.1.4
     # via
     #   pyogrio
@@ -29,6 +38,7 @@ click==8.3.1
     # via
     #   flask
     #   mlflow-skinny
+    #   streamlit
     #   uvicorn
 cloudpickle==3.1.2
     # via mlflow-skinny
@@ -74,7 +84,9 @@ geopandas==1.1.2
 gitdb==4.0.12
     # via gitpython
 gitpython==3.1.46
-    # via mlflow-skinny
+    # via
+    #   mlflow-skinny
+    #   streamlit
 google-auth==2.47.0
     # via databricks-sdk
 graphene==3.4.3
@@ -112,11 +124,18 @@ itsdangerous==2.2.0
 jedi==0.19.2
     # via ipython
 jinja2==3.1.6
-    # via flask
+    # via
+    #   altair
+    #   flask
+    #   pydeck
 joblib==1.5.3
     # via
     #   -r requirements.in
     #   scikit-learn
+jsonschema==4.26.0
+    # via altair
+jsonschema-specifications==2025.9.1
+    # via jsonschema
 jupyter-client==8.7.0
     # via ipykernel
 jupyter-core==5.9.1
@@ -151,6 +170,8 @@ mlflow-skinny==3.8.1
     # via mlflow
 mlflow-tracing==3.8.1
     # via mlflow
+narwhals==2.15.0
+    # via altair
 nest-asyncio==1.6.0
     # via ipykernel
 numpy==2.4.0
@@ -162,12 +183,14 @@ numpy==2.4.0
     #   missingno
     #   mlflow
     #   pandas
+    #   pydeck
     #   pyogrio
     #   reverse-geocoder
     #   scikit-learn
     #   scipy
     #   seaborn
     #   shapely
+    #   streamlit
     #   xgboost
 opentelemetry-api==1.39.1
     # via
@@ -187,6 +210,7 @@ opentelemetry-semantic-conventions==0.60b1
     # via opentelemetry-sdk
 packaging==25.0
     # via
+    #   altair
     #   geopandas
     #   ipykernel
     #   matplotlib
@@ -194,16 +218,20 @@ packaging==25.0
     #   mlflow-tracing
     #   pyogrio
     #   pytest
+    #   streamlit
 pandas==2.3.3
     # via
     #   -r requirements.in
     #   geopandas
     #   mlflow
     #   seaborn
+    #   streamlit
 parso==0.8.5
     # via jedi
 pillow==12.1.0
-    # via matplotlib
+    # via
+    #   matplotlib
+    #   streamlit
 platformdirs==4.5.1
     # via jupyter-core
 pluggy==1.6.0
@@ -216,12 +244,15 @@ protobuf==6.33.2
     #   mlflow-skinny
     #   mlflow-tracing
     #   opentelemetry-proto
+    #   streamlit
 psutil==7.2.1
     # via ipykernel
 pure-eval==0.2.3
     # via stack-data
 pyarrow==22.0.0
-    # via mlflow
+    # via
+    #   mlflow
+    #   streamlit
 pyasn1==0.6.1
     # via
     #   pyasn1-modules
@@ -238,6 +269,8 @@ pydantic==2.12.5
     #   mlflow-tracing
 pydantic-core==2.41.5
     # via pydantic
+pydeck==0.9.1
+    # via streamlit
 pygments==2.19.2
     # via
     #   ipython
@@ -271,13 +304,22 @@ pyzmq==27.1.0
     # via
     #   ipykernel
     #   jupyter-client
+referencing==0.37.0
+    # via
+    #   jsonschema
+    #   jsonschema-specifications
 requests==2.32.5
     # via
     #   databricks-sdk
     #   docker
     #   mlflow-skinny
+    #   streamlit
 reverse-geocoder==1.5.1
     # via -r requirements.in
+rpds-py==0.30.0
+    # via
+    #   jsonschema
+    #   referencing
 rsa==4.9.1
     # via google-auth
 scikit-learn==1.8.0
@@ -315,12 +357,19 @@ stack-data==0.6.3
     # via ipython
 starlette==0.50.0
     # via fastapi
+streamlit==1.53.0
+    # via -r requirements.in
+tenacity==9.1.2
+    # via streamlit
 threadpoolctl==3.6.0
     # via scikit-learn
+toml==0.10.2
+    # via streamlit
 tornado==6.5.4
     # via
     #   ipykernel
     #   jupyter-client
+    #   streamlit
 traitlets==5.14.3
     # via
     #   ipykernel
@@ -331,6 +380,7 @@ traitlets==5.14.3
 typing-extensions==4.15.0
     # via
     #   alembic
+    #   altair
     #   fastapi
     #   graphene
     #   mlflow-skinny
@@ -340,6 +390,7 @@ typing-extensions==4.15.0
     #   pydantic
     #   pydantic-core
     #   sqlalchemy
+    #   streamlit
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
@@ -355,6 +406,8 @@ uvicorn==0.40.0
     #   mlflow-skinny
 waitress==3.0.2
     # via mlflow
+watchdog==6.0.0
+    # via streamlit
 wcwidth==0.2.14
     # via prompt-toolkit
 werkzeug==3.1.4

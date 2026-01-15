@@ -48,5 +48,6 @@ joblib
 setuptools
 ipykernel
 pydantic
+streamlit
 
 
